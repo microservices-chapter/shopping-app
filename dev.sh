@@ -9,6 +9,7 @@ declare -a services=(
   "config-server"
   "api-gateway"
   "inventory-service"
+  "shopping-cart"
 )
 
 echo "::Step 1/3: Removing existing images"

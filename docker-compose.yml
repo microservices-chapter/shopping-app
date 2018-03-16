@@ -23,3 +23,12 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+
+  shopping-cart:
+      build: ../shopping-cart
+      mem_limit: 200000000
+      ports:
+        - 8084:8084
+      depends_on:
+        config-server:
+          condition: service_healthy
