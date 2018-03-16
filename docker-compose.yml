@@ -46,3 +46,12 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+
+  order-service:
+    build: ../order-service
+    mem_limit: 200000000
+    ports:
+      - 8099:8099
+    depends_on:
+      config-server:
+        condition: service_healthy

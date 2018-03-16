@@ -11,6 +11,7 @@ declare -a services=(
   "inventory-service"
   "shopping-cart"
   "review-service"
+  "order-service"
 )
 
 echo "::Step 1/3: Removing existing images"
