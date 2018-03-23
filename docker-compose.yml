@@ -55,3 +55,12 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+
+  recommendation-service:
+    build: ../recommendation-service
+    mem_limit: 200000000
+    ports:
+      - 8077:8077
+    depends_on:
+      config-server:
+        condition: service_healthy
