@@ -16,7 +16,7 @@ declare -a services=(
 )
 
 echo "::Step 1/3: Removing existing images"
-#docker-compose rm && true
+docker-compose rm && true
 
 echo "::Step 2/3: Building jars"
 services_to_build=( "${services[@]}" )

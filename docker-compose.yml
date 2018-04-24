@@ -1,5 +1,44 @@
 version: '2.1'
 services:
+  ####### ELK Stack ############
+  elasticsearch:
+    image: elasticsearch:latest
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kibana:
+    image: kibana:latest
+    volumes:
+      -  ../centralized-logging/kibana/kibana.yml:/opt/kibana/config/kibana.yml
+    ports:
+      - 5601:5601
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  logstash:
+    image: logstash:latest
+    command: bash -c "logstash -f /etc/logstash/conf.d/logstash.conf"
+    volumes:
+      - ../centralized-logging/logstash/:/etc/logstash/conf.d
+    ports:
+      - 5044:5044
+      - 9600:9600
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9600"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  ####### Common Services ############
   config-server:
     build: ../config-server
     mem_limit: 200000000
@@ -15,16 +54,28 @@ services:
       config-server:
         condition: service_healthy
 
+  ####### Microservices ############
   inventory-mongodb:
     image: mongo:latest
     ports:
       - 27017:27017
+
+  inventory-filebeat:
+    image: docker.elastic.co/beats/filebeat:6.2.4
+    volumes:
+      - ../inventory-service/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ../inventory-service/logs/:/logs/
+    depends_on:
+      logstash:
+        condition: service_healthy
 
   inventory-service:
     build: ../inventory-service
     mem_limit: 200000000
     ports:
       - 8081:8081
+    volumes:
+      - ../inventory-service/logs/:/logs/
     depends_on:
       config-server:
         condition: service_healthy
