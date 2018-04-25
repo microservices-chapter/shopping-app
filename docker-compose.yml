@@ -103,11 +103,22 @@ services:
     ports:
       - 27001:27017
 
+  order-filebeat:
+    image: docker.elastic.co/beats/filebeat:6.2.4
+    volumes:
+      - ../order-service/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ../order-service/logs/:/logs/
+    depends_on:
+      logstash:
+        condition: service_healthy
+
   order-service:
     build: ../order-service
     mem_limit: 200000000
     ports:
       - 8099:8099
+    volumes:
+      - ../order-service/logs/:/logs/
     depends_on:
       config-server:
         condition: service_healthy
