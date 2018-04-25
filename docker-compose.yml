@@ -98,6 +98,11 @@ services:
       config-server:
         condition: service_healthy
 
+  review-mongodb:
+      image: mongo:latest
+      ports:
+        - 27077:27017
+
   order-mongodb:
     image: mongo:latest
     ports:
