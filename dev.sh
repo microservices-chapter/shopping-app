@@ -8,6 +8,7 @@ set -e
 declare -a services=(
   "config-server"
   "api-gateway"
+  "discovery-service"
   "inventory-service"
   "shopping-cart"
   "review-service"
@@ -18,9 +19,9 @@ declare -a services=(
 echo "::Step 1/3: Removing existing images"
 docker-compose rm && true
 
-echo "::Step 2/3: Building jars"
-services_to_build=( "${services[@]}" )
-# is a service specified in the cmd line arg?
+# echo "::Step 2/3: Building jars"
+# services_to_build=( "${services[@]}" )
+# # is a service specified in the cmd line arg?
 if [ "$*" != "" ]; then
     services_to_build=( "$@" )
 fi

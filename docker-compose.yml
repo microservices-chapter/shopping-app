@@ -45,6 +45,14 @@ services:
     ports:
       - 8888:8888
 
+  discovery-service:
+    build: ../discovery-service
+    ports:
+      - 8761:8761
+    depends_on:
+      config-server:
+        condition: service_healthy
+
   api-gateway:
     build: ../api-gateway
     mem_limit: 200000000
